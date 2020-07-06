@@ -9,7 +9,8 @@ class ScriptStatus(models.Model):
     status_text = models.CharField(max_length=300)
     error_text = models.CharField(max_length=300, blank=True)
     timestamp = models.DateTimeField(default=django.utils.timezone.now)
-
+    class Meta:
+        app_label = 'scriptstatus'
     #__str__ method just tells Django what to print when it needs to print out an instance of the model.
     def __str__(self):
         return self.name

@@ -11,7 +11,8 @@ class Plant(models.Model):
     moisture = models.DecimalField(max_digits=4, decimal_places=3)
     fertility = models.DecimalField(max_digits=4, decimal_places=3)
     timestamp = models.DateTimeField(default=django.utils.timezone.now)
-
+    class Meta:
+        app_label = 'plants'
     #__str__ method just tells Django what to print when it needs to print out an instance of the model.
     def __str__(self):
         return self.name
