@@ -85,9 +85,25 @@ WSGI_APPLICATION = 'homepanorama.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 # TODO: https://docs.djangoproject.com/en/3.0/topics/db/multi-db/
-DATABASES = {   'default': {      'ENGINE': 'djongo',      'NAME': 'panorama-db',   }}
+DATABASE_ROUTERS = ['homepanorama.routers.DatabaseAppsRouter']
+DATABASE_APPS_MAPPING = {'plants': 'plants',
+                         'scriptstatus':'scripts'}
 
 
+DATABASES = {
+    'default': {
+        'NAME': 'panorama_data',
+        'ENGINE': 'djongo',
+    },
+    'plants': {
+        'NAME': 'plant_data',
+        'ENGINE': 'djongo',
+    },
+    'scripts': {
+        'NAME': 'script_data',
+        'ENGINE': 'djongo',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
