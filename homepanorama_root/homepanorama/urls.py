@@ -16,8 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from script_status.views import script_status_detail
+from plants.views import plant_detail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('scriptstatus/<int:script_id>/', script_status_detail, name='scriptstatus'),
+    path('plant/<int:plant_id>/', plant_detail, name='plant'),
 ]

@@ -1,18 +1,42 @@
 from django.db import models
 import django
 
+
+
 class Plant(models.Model):
+    address = models.CharField(max_length=100)
+    battery = models.IntegerField()
+    name = models.CharField(max_length=100)
     plant_id = models.IntegerField()
-    plantname = models.CharField(max_length=100)
-    battery = models.DecimalField(max_digits=4, decimal_places=3)
-    version = models.CharField(max_length=40)
-    sunlight = models.DecimalField(max_digits=4, decimal_places=3)
-    temperature = models.DecimalField(max_digits=4, decimal_places=3)
-    moisture = models.DecimalField(max_digits=4, decimal_places=3)
-    fertility = models.DecimalField(max_digits=4, decimal_places=3)
+    soil_fertility = models.IntegerField()
+    soil_moisture = models.IntegerField()
+    sunlight = models.IntegerField()
+    temperature = models.DecimalField(max_digits=4, decimal_places=2)
     timestamp = models.DateTimeField(default=django.utils.timezone.now)
-    class Meta:
-        app_label = 'plants'
-    #__str__ method just tells Django what to print when it needs to print out an instance of the model.
-    def __str__(self):
-        return self.name
+    version = models.CharField(max_length=40)
+
+
+class SoilFertitlityBorders(models.Model):
+    currency = models.CharField(max_length=100)
+    max = models.IntegerField()
+    min = models.IntegerField()
+    plant = models.ForeignKey(Plant, related_name='soil_fertitlity_borders', on_delete=models.CASCADE)
+
+
+class SoilMoistureBorders(models.Model):
+    currency = models.CharField(max_length=100)
+    max = models.IntegerField()
+    min = models.IntegerField()
+    plant = models.ForeignKey(Plant, related_name='soil_moisture_borders', on_delete=models.CASCADE)
+
+class SunlightIntensityBorders(models.Model):
+    currency = models.CharField(max_length=100)
+    max = models.IntegerField()
+    min = models.IntegerField()
+    plant = models.ForeignKey(Plant, related_name='sunlight_intensity_borders', on_delete=models.CASCADE)
+
+class TemperatureBorders(models.Model):
+    currency = models.CharField(max_length=100)
+    max = models.IntegerField()
+    min = models.IntegerField()
+    plant = models.ForeignKey(Plant, related_name='temperature_borders', on_delete=models.CASCADE)
