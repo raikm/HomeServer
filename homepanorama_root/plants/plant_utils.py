@@ -1,3 +1,5 @@
+from django.db.models import Count
+
 from plants.serializers import PlantSerializer, SoilFertitlityBordersSerializer, SoilMoistureBordersSerializer, \
     SunlightIntensityBordersSerializer, TemperatureBordersSerializer
 from .models import Plant, SoilFertitlityBorders, SoilMoistureBorders, SunlightIntensityBorders, TemperatureBorders
@@ -22,3 +24,34 @@ def get_plant_details(plant_id):
     plant_dict["sunlight_intensity_borders"] = (sunlight_intensity_borders.data)
     plant_dict["temperature_borders"] = (temperature_borders.data)
     return plant_dict
+
+
+
+def get_all_plant_details():
+    # get all unique IDs
+    plant_list_id = Plant.objects.values('plant_id').distinct()
+    plants_dict = {}
+    for plant_id_dic in plant_list_id:
+        plant_id = plant_id_dic['plant_id']
+        print("prepare Plant with the ID: " + plant_id)
+        #TODO: use get_plant_details
+        plant = Plant.objects.filter(plant_id=plant_id).latest('timestamp')
+
+        soil_fertitlity_borders = SoilFertitlityBorders.objects.get(plant_id=plant_id)
+        soil_moisture_borders = SoilMoistureBorders.objects.get(plant_id=plant_id)
+        sunlight_intensity_borders = SunlightIntensityBorders.objects.get(plant_id=plant_id)
+        temperature_borders = TemperatureBorders.objects.get(plant_id=plant_id)
+
+        plant_serializer = PlantSerializer(plant)
+        soil_fertitlity_borders_serializer = SoilFertitlityBordersSerializer(soil_fertitlity_borders)
+        soil_moisture_borders = SoilMoistureBordersSerializer(soil_moisture_borders)
+        sunlight_intensity_borders = SunlightIntensityBordersSerializer(sunlight_intensity_borders)
+        temperature_borders = TemperatureBordersSerializer(temperature_borders)
+        plant_dict = plant_serializer.data
+        plant_dict["soil_fertitlity_borders_serializer"] = (soil_fertitlity_borders_serializer.data)
+        plant_dict["soil_moisture_borders"] = (soil_moisture_borders.data)
+        plant_dict["sunlight_intensity_borders"] = (sunlight_intensity_borders.data)
+        plant_dict["temperature_borders"] = (temperature_borders.data)
+        plants_dict[plant_serializer.data['name']] = plant_dict
+
+    return plants_dict

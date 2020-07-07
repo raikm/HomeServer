@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
-from .plant_utils import get_plant_details
+from .plant_utils import get_plant_details, get_all_plant_details
 
 @csrf_exempt
 @api_view(('PUT', 'GET'))
@@ -27,7 +27,9 @@ def plant_detail(request, plant_id):
 @api_view(('GET', ))
 def all_plants(request):
     # get all plants (latest included the details)
-    pass
+    result = get_all_plant_details()
+    print (result)
+    return JsonResponse(result, status=status.HTTP_200_OK)
 
 
 @csrf_exempt

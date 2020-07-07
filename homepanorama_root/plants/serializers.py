@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Plant, SoilFertitlityBorders, SoilMoistureBorders, SunlightIntensityBorders, TemperatureBorders
 
+
 class SoilFertitlityBordersSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SoilFertitlityBorders
@@ -12,10 +13,12 @@ class SoilMoistureBordersSerializer(serializers.HyperlinkedModelSerializer):
         model = SoilMoistureBorders
         fields = ('currency', 'min', 'max')
 
+
 class SunlightIntensityBordersSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SunlightIntensityBorders
         fields = ('currency', 'min', 'max')
+
 
 class TemperatureBordersSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -26,5 +29,7 @@ class TemperatureBordersSerializer(serializers.HyperlinkedModelSerializer):
 class PlantSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Plant
-        fields = ('address', 'battery', 'name', 'plant_id', 'soil_fertility','soil_moisture', 'sunlight', 'temperature', 'timestamp', 'version')
+        fields = (
+            'address', 'battery', 'name', 'plant_id', 'soil_fertility', 'soil_moisture', 'sunlight', 'temperature',
+            'timestamp', 'version')
         depth = 3
