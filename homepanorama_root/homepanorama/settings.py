@@ -25,7 +25,7 @@ SECRET_KEY = '-1pag@jy59j(1i+b5jjczafye&m!zx3hxtt=w1bbs3@zvo5mx8'
 # DEBUG can be True/False or 1/0
 DEBUG = int(os.environ.get('DEBUG', default=1))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS =  ['192.168.0.25', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'plants',
     'script_status',
     'rest_framework',
@@ -50,7 +51,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+#TODO: check before go live
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 ROOT_URLCONF = 'homepanorama.urls'
 

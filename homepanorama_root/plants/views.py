@@ -6,7 +6,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
-from .plant_utils import get_plant_details, get_all_plant_details
+from .plant_utils import get_plant_details, get_all_plant_details, get_plant_history
+import json
+
 
 @csrf_exempt
 @api_view(('PUT', 'GET'))
@@ -15,7 +17,6 @@ def plant_detail(request, plant_id):
         plant_dict = get_plant_details(plant_id)
         return JsonResponse(plant_dict, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
-        print(request.data)
         serializer = PlantSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -28,11 +29,12 @@ def plant_detail(request, plant_id):
 def all_plants(request):
     # get all plants (latest included the details)
     result = get_all_plant_details()
-    print (result)
     return JsonResponse(result, status=status.HTTP_200_OK)
 
 
 @csrf_exempt
 @api_view(('GET', ))
 def plant_detail_history(request, plant_id):
-    pass
+    result = get_plant_history(plant_id)
+    print (result)
+    return JsonResponse(result, status=status.HTTP_200_OK)
