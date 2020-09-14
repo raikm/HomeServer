@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'plants',
     'script_status',
     'rest_framework',
+
 ]
 
 MIDDLEWARE = [
