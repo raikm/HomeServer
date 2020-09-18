@@ -26,7 +26,7 @@ def get_plant_details(plant_id):
     return plant_dict
 
 def get_plant_details(plant_id, timestamp):
-    print(str(plant_id) + "     " + str(timestamp))
+    #print(str(plant_id) + "     " + str(timestamp))
     _plant = Plant.objects.filter(plant_id=plant_id, timestamp=timestamp)
     #TODO: what if more found?
     plant = _plant[0]
@@ -48,20 +48,20 @@ def get_plant_details(plant_id, timestamp):
     return plant_dict
 
 def get_plant_history(plant_id):
-    print("start")
+    #("start")
     plant_list = Plant.objects.filter(plant_id=plant_id).order_by('timestamp')
-    print(len(plant_list))
+    #print(len(plant_list))
     plants_dict = {}
     counter = 0
     for plant in plant_list:
         #TODO: History border by maxmium 1 year e.g.
-        print("get plant from : " + str(plant.timestamp))
+        #print("get plant from : " + str(plant.timestamp))
         plant_dict = get_plant_details(plant.plant_id, plant.timestamp)
-        print("-----------------------------" + str(counter) + "-------------------")
+        #print("-----------------------------" + str(counter) + "-------------------")
         plants_dict[counter] = plant_dict
         #TODO bugfix: that is just a quick solution
         counter = counter + 1
-    print("length = " + str(len(plants_dict)))
+    #print("length = " + str(len(plants_dict)))
 
     return plants_dict
 
@@ -72,7 +72,7 @@ def get_all_plant_details():
     plants_dict = {}
     for plant_id_dic in plant_list_id:
         plant_id = plant_id_dic['plant_id']
-        print("prepare Plant with the ID: " + str(plant_id))
+        #print("prepare Plant with the ID: " + str(plant_id))
         #TODO: use get_plant_details
         plant = Plant.objects.filter(plant_id=plant_id).latest('timestamp')
 

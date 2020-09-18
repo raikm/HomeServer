@@ -36,5 +36,5 @@ def all_plants(request):
 @api_view(('GET', ))
 def plant_detail_history(request, plant_id):
     result = get_plant_history(plant_id)
-    print (result)
+    #print (result)
     return JsonResponse(result, status=status.HTTP_200_OK)
