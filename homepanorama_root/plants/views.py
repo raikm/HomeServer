@@ -18,7 +18,6 @@ def plant_detail(request, plant_id):
         return JsonResponse(plant_dict, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
         serializer = PlantSerializer(data=request.data)
-
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
