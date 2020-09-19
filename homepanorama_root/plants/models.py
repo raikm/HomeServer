@@ -29,14 +29,22 @@ class SoilMoistureBorders(models.Model):
     min = models.IntegerField()
     plant = models.ForeignKey(Plant, related_name='soil_moisture_borders', on_delete=models.CASCADE)
 
+
 class SunlightIntensityBorders(models.Model):
     currency = models.CharField(max_length=100)
     max = models.IntegerField()
     min = models.IntegerField()
     plant = models.ForeignKey(Plant, related_name='sunlight_intensity_borders', on_delete=models.CASCADE)
 
+
 class TemperatureBorders(models.Model):
     currency = models.CharField(max_length=100)
     max = models.IntegerField()
     min = models.IntegerField()
     plant = models.ForeignKey(Plant, related_name='temperature_borders', on_delete=models.CASCADE)
+
+
+class Locations(models.Model):
+    location = models.CharField(max_length=100)
+    location_details = models.CharField(max_length=100)
+    plant = models.ForeignKey(Plant, related_name='locations', on_delete=models.CASCADE)
