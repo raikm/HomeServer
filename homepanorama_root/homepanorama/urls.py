@@ -16,12 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from script_status.views import script_status_detail
-from plants.views import plant_detail, all_plants, plant_detail_history
+from plants.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('scriptstatus/<int:script_id>/', script_status_detail, name='scriptstatus'),
     path('plant/<int:plant_id>/', plant_detail, name='plant'),
-    path('allplants/', all_plants, name='allplants'),
+    path('getAllPlantData/', all_plants_with_data, name='allplants'),
+    path('getAllPlants/', get_all_plants, name="get_all_plants"),
     path('planthistory/<int:plant_id>/', plant_detail_history, name='planthistory'),
+    path('reload_plant_data/', reload_plant_data, name="reload_plant_data"),
 ]

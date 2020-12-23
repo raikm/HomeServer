@@ -100,7 +100,7 @@ WSGI_APPLICATION = 'homepanorama.wsgi.application'
 
 DATABASES = {
     'default': {
-        'NAME': 'panorama_data.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'panorama_data.sqlite3'),
         'ENGINE': 'django.db.backends.sqlite3',
     },
     # 'plants': {
