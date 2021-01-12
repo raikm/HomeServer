@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Plant, SoilFertitlityBorders, SoilMoistureBorders, SunlightIntensityBorders, TemperatureBorders, PlantData, Locations
+from .models import Plant, SoilFertitlityBorders, SoilMoistureBorders, SunlightIntensityBorders, TemperatureBorders, PlantData, Locations, ValueChanges
 
 
 class SoilFertitlityBordersSerializer(serializers.HyperlinkedModelSerializer):
@@ -46,3 +46,10 @@ class LocationsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Locations
         fields = ('location', 'location_details')
+
+
+class ValueChangesSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ValueChanges
+        fields = ('value', 'date')
+

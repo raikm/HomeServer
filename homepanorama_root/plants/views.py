@@ -18,7 +18,9 @@ def plant_detail(request, plant_id):
         return JsonResponse(plant_dict, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
         plant_json = request.data
-        last_documentad_plant_data = get_plant_details(plant_json["plant_id"])
+        print(plant_json)
+        plantdata = PlantData.objects.filter(plant_id=plant_json["plant_id"]).latest('timestamp')
+        last_documentad_plant_data = get_plant_details(plantdata, plant_json["plant_id"])
         checkup_plant_data(plant_json, last_documentad_plant_data)
         plant = Plant.objects.filter(id=plant_json["plant_id"]).first()
         try:
@@ -26,15 +28,13 @@ def plant_detail(request, plant_id):
         except:
             return Response("error while saving data update", status=status.HTTP_400_BAD_REQUEST)
 
-        #TODO: check if data for moisture and fertilizer got up to mark day as 'given'
 
         return Response("new data update saved", status=status.HTTP_201_CREATED)
 
 
-#TODO: rename in url
 @csrf_exempt
 @api_view(('GET', ))
-def all_plants_with_data(request):
+def get_all_plant_data(request):
     # get all plants (latest included the details)
     # TODO: modify methode
     result = get_all_plant_details()
@@ -45,26 +45,24 @@ def all_plants_with_data(request):
 @api_view(('GET', ))
 def get_all_plants(request):
     plant_list = Plant.objects.all()
-    plant_list_serialized = []
+    plant_list_result = []
     for plant in plant_list:
-        plant_serialized = PlantSerializer(plant)
-        plant_list_serialized.append(plant_serialized.data)
-    return Response(plant_list_serialized, status=status.HTTP_200_OK)
+        plantdata = PlantData.objects.filter(plant_id=plant.id).latest('timestamp')
+        plant_list_result.append(get_plant_details(plantdata, plant.id))
+    return Response(plant_list_result, status=status.HTTP_200_OK)
 
 
 @csrf_exempt
 @api_view(('GET', ))
 def plant_detail_history(request, plant_id):
-    # TODO: modify methode
     result = get_plant_history(plant_id)
-    #print (result)
     return JsonResponse(result, status=status.HTTP_200_OK)
 
 
 @csrf_exempt
 @api_view(('GET', ))
 def reload_plant_data(request):
-    # print("start")
+    print("start")
     ssh_newkey = 'Are you sure you want to continue connecting'
     child = pexpect.spawn('ssh hoobs@192.168.1.79 sudo python3 /AutomationTools/Tools/miflora_reader.py')
     i = child.expect([pexpect.TIMEOUT, ssh_newkey, 'password: '])
@@ -86,8 +84,8 @@ def reload_plant_data(request):
     child.sendline('hoobsadmin')
     child.expect(pexpect.EOF, timeout=120)
     output = child.before
-    # import time
-    # time.sleep(10)  # Sleep for 3 seconds
+    print(output)
+
     result = get_all_plant_details()
     print(result)
-    return JsonResponse(result, status=status.HTTP_200_OK)
+    return JsonResponse(result, status=status.HTTP_200_OK, safe=False)
