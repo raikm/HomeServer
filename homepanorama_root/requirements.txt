@@ -1,4 +1,12 @@
-Django==3.0.8
-djangorestframework==3.11.0
-djongo==1.3.3
-
+Django
+django-cors-headers
+django-mongodb-engine
+djangorestframework
+djangotoolbox
+djongo
+gunicorn==20.0.4
+jsonschema==3.2.0
+oauth2client==4.1.3
+oauthlib==3.1.0
+pexpect
+python-dateutil
