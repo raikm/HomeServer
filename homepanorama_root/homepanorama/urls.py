@@ -26,6 +26,8 @@ urlpatterns = [
     path('getAllPlants/', get_all_plants, name="get_all_plants"),
     path('planthistory/<int:plant_id>/', plant_detail_history, name='planthistory'),
     path('reload_plant_data/', reload_plant_data, name="reload_plant_data"),
-    
+    path('create_update_plant/<int:plant_id>/', create_update_plant, name="create_update_plant"),
+    path('getNewId/', get_new_id, name='get_new_id'),
+    # path('getAvailableMacAddresses/', get_not_set_mac_addresses, name='get_not_set_mac_addresses'),
 
 ]

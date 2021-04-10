@@ -85,35 +85,38 @@ def get_all_plant_details():
     plant_list_id = Plant.objects.values('id').distinct()
     plants_dict = []
     for plant_id_dic in plant_list_id:
+        try:
+            plant_id = plant_id_dic['id']
 
-        plant_id = plant_id_dic['id']
+            #TODO: use get_plant_details
+            plantdata = PlantData.objects.filter(plant_id=plant_id).latest('timestamp')
+            plant = Plant.objects.filter(id=plant_id).first()
+            soil_fertitlity_borders = SoilFertitlityBorders.objects.get(plant_id=plant.id)
+            soil_moisture_borders = SoilMoistureBorders.objects.get(plant_id=plant.id)
+            sunlight_intensity_borders = SunlightIntensityBorders.objects.get(plant_id=plant.id)
+            temperature_borders = TemperatureBorders.objects.get(plant_id=plant.id)
 
-        #TODO: use get_plant_details
-        plantdata = PlantData.objects.filter(plant_id=plant_id).latest('timestamp')
-        plant = Plant.objects.filter(id=plant_id).first()
-        soil_fertitlity_borders = SoilFertitlityBorders.objects.get(plant_id=plant.id)
-        soil_moisture_borders = SoilMoistureBorders.objects.get(plant_id=plant.id)
-        sunlight_intensity_borders = SunlightIntensityBorders.objects.get(plant_id=plant.id)
-        temperature_borders = TemperatureBorders.objects.get(plant_id=plant.id)
+            plant_data_serialized = PlantDataSerializer(plantdata).data
+            plant_serialized = PlantSerializer(plant).data
 
-        plant_data_serialized = PlantDataSerializer(plantdata).data
-        plant_serialized = PlantSerializer(plant).data
+            soil_fertitlity_borders_serializer = SoilFertitlityBordersSerializer(soil_fertitlity_borders)
+            soil_moisture_borders = SoilMoistureBordersSerializer(soil_moisture_borders)
+            sunlight_intensity_borders = SunlightIntensityBordersSerializer(sunlight_intensity_borders)
+            temperature_borders = TemperatureBordersSerializer(temperature_borders)
+            plant_dict = plant_data_serialized
+            plant_dict.update(plant_serialized)
+            location = Locations.objects.get(plant_id=plant.id)
+            location = LocationsSerializer(location)
+            plant_dict["location"] = (location.data)
 
-        soil_fertitlity_borders_serializer = SoilFertitlityBordersSerializer(soil_fertitlity_borders)
-        soil_moisture_borders = SoilMoistureBordersSerializer(soil_moisture_borders)
-        sunlight_intensity_borders = SunlightIntensityBordersSerializer(sunlight_intensity_borders)
-        temperature_borders = TemperatureBordersSerializer(temperature_borders)
-        plant_dict = plant_data_serialized
-        plant_dict.update(plant_serialized)
-        location = Locations.objects.get(plant_id=plant.id)
-        location = LocationsSerializer(location)
-        plant_dict["location"] = (location.data)
-
-        plant_dict["soil_fertitlity_borders"] = (soil_fertitlity_borders_serializer.data)
-        plant_dict["soil_moisture_borders"] = (soil_moisture_borders.data)
-        plant_dict["sunlight_intensity_borders"] = (sunlight_intensity_borders.data)
-        plant_dict["temperature_borders"] = (temperature_borders.data)
-        plants_dict.append(plant_dict)
+            plant_dict["soil_fertitlity_borders"] = (soil_fertitlity_borders_serializer.data)
+            plant_dict["soil_moisture_borders"] = (soil_moisture_borders.data)
+            plant_dict["sunlight_intensity_borders"] = (sunlight_intensity_borders.data)
+            plant_dict["temperature_borders"] = (temperature_borders.data)
+            plants_dict.append(plant_dict)
+        except Exception as e:
+            print(e)
+            continue
     return plants_dict
 
 

@@ -8,6 +8,8 @@ class Plant(models.Model):
     address = models.CharField(max_length=100)
 
 
+
+
 class PlantData(models.Model):
     battery = models.IntegerField()
     soil_fertility = models.IntegerField()
