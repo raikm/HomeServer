@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from django.db.models import Count
 import dateutil.parser
@@ -120,6 +120,14 @@ def get_all_plant_details():
     return plants_dict
 
 
+def data_cleanup(plant_id):
+    fourteen_days_ago = datetime.now() - timedelta(days=14)
+    old_plant_data = PlantData.objects.filter(plant_id=plant_id, timestamp__lt=fourteen_days_ago)
+    if old_plant_data:
+        print("delete old data")
+        print(old_plant_data)
+        old_plant_data.delete()
+
 def checkup_plant_data(new_plant_data, old_plant_data):
     print("--------------")
     print(str(new_plant_data['soil_moisture']) + " == ?" + str(old_plant_data['soil_moisture']))
@@ -144,4 +152,6 @@ def data_checkup(new_data, old_data, threshold):
     if int(new_data) > int(old_data) + threshold:
         return True
     return False
+
+
 

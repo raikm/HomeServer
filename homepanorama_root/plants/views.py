@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
-from .plant_utils import get_plant_details, get_all_plant_details, get_plant_history, checkup_plant_data
+from .plant_utils import get_plant_details, get_all_plant_details, get_plant_history, checkup_plant_data, data_cleanup
 from .models import Plant, SoilFertitlityBorders, SoilMoistureBorders, SunlightIntensityBorders, TemperatureBorders, \
     Locations
 import pexpect
@@ -19,11 +19,12 @@ def plant_detail(request, plant_id):
         return JsonResponse(plant_dict, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
         plant_json = request.data
-        print(plant_json)
-        plantdata = PlantData.objects.filter(plant_id=plant_json["plant_id"]).latest('timestamp')
-        last_documentad_plant_data = get_plant_details(plantdata, plant_json["plant_id"])
-        checkup_plant_data(plant_json, last_documentad_plant_data)
+        if PlantData.objects.filter(plant_id=plant_json["plant_id"]).first():
+            plantdata = PlantData.objects.filter(plant_id=plant_json["plant_id"]).latest('timestamp')
+            last_documentad_plant_data = get_plant_details(plantdata, plant_json["plant_id"])
+            checkup_plant_data(plant_json, last_documentad_plant_data)
         plant = Plant.objects.filter(id=plant_json["plant_id"]).first()
+        data_cleanup(plant.id)
         try:
             PlantData.objects.create(battery=plant_json["battery"], soil_fertility=plant_json["soil_fertility"],
                                      soil_moisture=plant_json["soil_moisture"], sunlight=plant_json["sunlight"],
@@ -58,6 +59,19 @@ def get_all_plant_data(request):
 @csrf_exempt
 @api_view(('GET',))
 def get_all_plants(request):
+    plant_qs = Plant.objects.all()
+    plant_list = []
+    for plant in plant_qs:
+        plant_serialized = PlantSerializer(plant).data
+        plant_location_qs = Locations.objects.get(plant_id=plant.id)
+        plant_location_serialized = LocationsSerializer(plant_location_qs).data
+        plant_serialized["location"] = plant_location_serialized
+        plant_list.append(plant_serialized)
+    return Response(plant_list, status=status.HTTP_200_OK)
+
+@csrf_exempt
+@api_view(('GET',))
+def get_latest_plant_updates(request):
     plant_list = Plant.objects.all()
     plant_list_result = []
     for plant in plant_list:
@@ -67,7 +81,6 @@ def get_all_plants(request):
         except PlantData.DoesNotExist:
             print("skip plant data since no data yet fetched")
     return Response(plant_list_result, status=status.HTTP_200_OK)
-
 
 @csrf_exempt
 @api_view(('GET',))
