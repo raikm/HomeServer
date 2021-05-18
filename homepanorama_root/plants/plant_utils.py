@@ -5,7 +5,8 @@ import dateutil.parser
 from .serializers import PlantSerializer, SoilFertitlityBordersSerializer, SoilMoistureBordersSerializer, \
     SunlightIntensityBordersSerializer, TemperatureBordersSerializer, LocationsSerializer, PlantDataSerializer, ValueChangesSerializer
 from .models import Plant, SoilFertitlityBorders, SoilMoistureBorders, SunlightIntensityBorders, TemperatureBorders, Locations, PlantData, ValueChanges
-
+from datetime import date
+from datetime import datetime, timedelta
 
 def get_plant_details(plantdata, plant_id):
     plant = Plant.objects.filter(id=plant_id).first()
@@ -34,21 +35,19 @@ def get_plant_details(plantdata, plant_id):
     return plant_dict
 
 
-def get_plant_history(plant_id):
-
-    plant_list = PlantData.objects.filter(plant_id=plant_id).order_by('timestamp')
+def get_plant_history(plant_id, hours):
+    minimum_datetime = datetime.now() + timedelta(hours= 0 - hours)
+    plant_list = PlantData.objects.filter(plant_id=plant_id).filter(timestamp__gt=minimum_datetime).order_by('timestamp')
     plants_dict = {}
     counter = 0
-    for plant in plant_list:
-        #TODO: History border by maxmium 1 year e.g.
-
-        plantdata = PlantData.objects.filter(plant_id=plant_id, timestamp=plant.timestamp).first()
-        plant_dict = get_plant_details(plantdata, plant.plant_id)
-        #print("-----------------------------" + str(counter) + "-------------------")
-        plants_dict[counter] = plant_dict
-        #TODO bugfix: that is just a quick solution
-        counter = counter + 1
-    plant_id = plant_list[0].plant_id
+    if plant_list.count() > 0:
+        for plant in plant_list:
+            plantdata = PlantData.objects.filter(plant_id=plant_id, timestamp=plant.timestamp).first()
+            plant_dict = get_plant_details(plantdata, plant.plant_id)
+            #print("-----------------------------" + str(counter) + "-------------------")
+            plants_dict[counter] = plant_dict
+            #TODO bugfix: that is just a quick solution
+            counter = counter + 1
     #get all entries from the last 7 days  / 7 weeks
     start_seven_days_ago = datetime.now() - timedelta(days=6)
     start_seven_weeks_ago = datetime.now() - timedelta(days=48)
@@ -68,13 +67,10 @@ def get_hits(result_list, range_in_days, start_datetime, interval):
     #TODO: bugfix for weeks than range of 7 days counts as hit
     for x in range(range_in_days):
         if interval == 1 and start_datetime.date() in result_list:
-            print("hit = 1")
             past_reviews.append(1)
         elif interval == 7 and any(date in result_list for date in [start_datetime.date() + timedelta(days=x) for x in range(interval)]):
-            print("hit = 1")
             past_reviews.append(1)
         else:
-            print("no hit = 0")
             past_reviews.append(0)
         start_datetime += timedelta(days=interval)
     return past_reviews

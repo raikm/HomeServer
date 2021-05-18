@@ -1,3 +1,5 @@
+import pytz
+
 from .serializers import *
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
@@ -8,7 +10,10 @@ from .plant_utils import get_plant_details, get_all_plant_details, get_plant_his
 from .models import Plant, SoilFertitlityBorders, SoilMoistureBorders, SunlightIntensityBorders, TemperatureBorders, \
     Locations
 import pexpect
-
+from datetime import date
+from datetime import datetime, timedelta
+today = date.today()
+midnight = datetime.combine(today, datetime.min.time()) + timedelta(minutes=-5)
 
 @csrf_exempt
 @api_view(('PUT', 'GET'))
@@ -16,18 +21,23 @@ def plant_detail(request, plant_id):
     if request.method == 'GET':
         # TODO: modify methode
         plant_dict = get_plant_details(plant_id)
+
         return JsonResponse(plant_dict, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
         plant_json = request.data
+        last_sunlight_data = 0
         if PlantData.objects.filter(plant_id=plant_json["plant_id"]).first():
             plantdata = PlantData.objects.filter(plant_id=plant_json["plant_id"]).latest('timestamp')
-            last_documentad_plant_data = get_plant_details(plantdata, plant_json["plant_id"])
-            checkup_plant_data(plant_json, last_documentad_plant_data)
+            if check_for_reset(plant_json["plant_id"]) is False:
+                last_sunlight_data = plantdata.sunlight
+            last_documented_plant_data = get_plant_details(plantdata, plant_json["plant_id"])
+            checkup_plant_data(plant_json, last_documented_plant_data)
         plant = Plant.objects.filter(id=plant_json["plant_id"]).first()
         data_cleanup(plant.id)
         try:
+
             PlantData.objects.create(battery=plant_json["battery"], soil_fertility=plant_json["soil_fertility"],
-                                     soil_moisture=plant_json["soil_moisture"], sunlight=plant_json["sunlight"],
+                                     soil_moisture=plant_json["soil_moisture"], sunlight=last_sunlight_data + int(plant_json["sunlight"]),
                                      temperature=plant_json["temperature"], timestamp=plant_json["timestamp"],
                                      plant=plant)
         except:
@@ -84,8 +94,8 @@ def get_latest_plant_updates(request):
 
 @csrf_exempt
 @api_view(('GET',))
-def plant_detail_history(request, plant_id):
-    result = get_plant_history(plant_id)
+def plant_detail_history(request, plant_id, hours):
+    result = get_plant_history(plant_id, hours)
     return JsonResponse(result, status=status.HTTP_200_OK)
 
 
@@ -204,3 +214,12 @@ def get_not_set_mac_addresses(request):
 #     child.expect(pexpect.EOF, timeout=120)
 #     output = child.before
 #     return output
+
+def check_for_reset(plant_id):
+    print("check for reset at " + str(datetime.now(tz=pytz.timezone('Europe/Berlin'))))
+    print("midnight: " + str(midnight))
+    result = PlantData.objects.filter(plant_id=plant_id).filter(timestamp__gt=midnight).count()
+    print("result: " + str(result))
+    if result == 0:
+        return True
+    return False
