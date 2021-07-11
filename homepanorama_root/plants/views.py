@@ -1,19 +1,21 @@
-import pytz
+from datetime import date, datetime, timedelta
 
-from .serializers import *
+import pexpect
+import pytz
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-from django.http import JsonResponse
-from .plant_utils import get_plant_details, get_all_plant_details, get_plant_history, checkup_plant_data, data_cleanup
-from .models import Plant, SoilFertitlityBorders, SoilMoistureBorders, SunlightIntensityBorders, TemperatureBorders, \
-    Locations
-import pexpect
-from datetime import date
-from datetime import datetime, timedelta
-today = date.today()
-midnight = datetime.combine(today, datetime.min.time()) + timedelta(minutes=-5)
+from rest_framework.response import Response
+
+from .models import (Locations, Plant, SoilFertitlityBorders,
+                     SoilMoistureBorders, SunlightIntensityBorders,
+                     TemperatureBorders)
+from .plant_utils import (checkup_plant_data, data_cleanup,
+                          get_all_plant_details, get_plant_details,
+                          get_plant_history)
+from .serializers import *
+
 
 @csrf_exempt
 @api_view(('PUT', 'GET'))
@@ -216,10 +218,11 @@ def get_not_set_mac_addresses(request):
 #     return output
 
 def check_for_reset(plant_id):
+    today = date.today()
+    midnight = datetime.combine(today, datetime.min.time()) + timedelta(minutes=-5)
     print("check for reset at " + str(datetime.now(tz=pytz.timezone('Europe/Berlin'))))
     print("midnight: " + str(midnight))
     result = PlantData.objects.filter(plant_id=plant_id).filter(timestamp__gt=midnight).count()
-    print("result: " + str(result))
     if result == 0:
         return True
     return False
