@@ -1,5 +1,5 @@
-from django.db import models
 import django
+from django.db import models
 
 
 class Plant(models.Model):
@@ -51,6 +51,7 @@ class TemperatureBorders(models.Model):
 class Locations(models.Model):
     location = models.CharField(max_length=100)
     location_details = models.CharField(max_length=100)
+    location_floor = models.IntegerField()
     plant = models.ForeignKey(Plant, null=True, blank=True, related_name='location', on_delete=models.CASCADE)
 
 

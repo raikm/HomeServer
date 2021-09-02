@@ -25,7 +25,8 @@ SECRET_KEY = '-1pag@jy59j(1i+b5jjczafye&m!zx3hxtt=w1bbs3@zvo5mx8'
 # DEBUG can be True/False or 1/0
 DEBUG = int(os.environ.get('DEBUG', default=1))
 
-ALLOWED_HOSTS =  ['192.168.0.25', 'localhost', '127.0.0.1', '192.168.1.217', '192.168.1.50', '192.168.1.80', '192.168.1.79', 'homeapp.com']
+ALLOWED_HOSTS = ['192.168.0.25', 'localhost', '127.0.0.1', '192.168.1.217',
+                 '192.168.1.50', '192.168.1.80', '192.168.1.79', '192.168.1.213', 'homeapp.com']
 
 
 # Application definition
@@ -56,7 +57,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
-#TODO: check before go live
+# TODO: check before go live
 CORS_ORIGIN_ALLOW_ALL = True
 
 
