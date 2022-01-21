@@ -14,9 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
-from script_status.views import *
+from django.urls import include, path
+from health_data.views import save_health_data_export
 from plants.views import *
+from script_status.views import *
 
 urlpatterns = [
     #path('admin/', admin.site.urls),
@@ -29,6 +30,7 @@ urlpatterns = [
     path('reload_plant_data/', reload_plant_data, name="reload_plant_data"),
     path('create_update_plant/<int:plant_id>/', create_update_plant, name="create_update_plant"),
     path('getNewId/', get_new_id, name='get_new_id'),
+    path('health', save_health_data_export, name='save_health_data_export')
     # path('getAvailableMacAddresses/', get_not_set_mac_addresses, name='get_not_set_mac_addresses'),
 
 ]

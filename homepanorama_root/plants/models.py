@@ -3,6 +3,7 @@ from django.db import models
 
 
 class Plant(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     version = models.CharField(max_length=40)
     address = models.CharField(max_length=100)
@@ -11,6 +12,7 @@ class Plant(models.Model):
 
 
 class PlantData(models.Model):
+    id = models.AutoField(primary_key=True)
     battery = models.IntegerField()
     soil_fertility = models.IntegerField()
     soil_moisture = models.IntegerField()
@@ -21,6 +23,7 @@ class PlantData(models.Model):
 
 
 class SoilFertitlityBorders(models.Model):
+    id = models.AutoField(primary_key=True)
     currency = models.CharField(max_length=100)
     max = models.IntegerField()
     min = models.IntegerField()
@@ -28,6 +31,7 @@ class SoilFertitlityBorders(models.Model):
 
 
 class SoilMoistureBorders(models.Model):
+    id = models.AutoField(primary_key=True)
     currency = models.CharField(max_length=100)
     max = models.IntegerField()
     min = models.IntegerField()
@@ -35,6 +39,7 @@ class SoilMoistureBorders(models.Model):
 
 
 class SunlightIntensityBorders(models.Model):
+    id = models.AutoField(primary_key=True)
     currency = models.CharField(max_length=100)
     max = models.IntegerField()
     min = models.IntegerField()
@@ -42,6 +47,7 @@ class SunlightIntensityBorders(models.Model):
 
 
 class TemperatureBorders(models.Model):
+    id = models.AutoField(primary_key=True)
     currency = models.CharField(max_length=100)
     max = models.IntegerField()
     min = models.IntegerField()
@@ -49,6 +55,7 @@ class TemperatureBorders(models.Model):
 
 
 class Locations(models.Model):
+    id = models.AutoField(primary_key=True)
     location = models.CharField(max_length=100)
     location_details = models.CharField(max_length=100)
     location_floor = models.IntegerField()
@@ -56,10 +63,10 @@ class Locations(models.Model):
 
 
 class ValueChanges(models.Model):
-    class ValueType(models.TextChoices):
+    class ValueType(models.TextChoices): 
         FERTILITY = 'F', ('Fertility')
         MOISTURE = 'M', ('Moisture')
-
+    id = models.AutoField(primary_key=True)
     value = models.CharField(max_length=2,choices=ValueType.choices)
     date = models.DateTimeField(default=django.utils.timezone.now)
     plant = models.ForeignKey(Plant, null=True, blank=True, related_name='value_changes', on_delete=models.CASCADE)

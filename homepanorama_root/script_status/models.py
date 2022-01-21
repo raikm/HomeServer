@@ -1,8 +1,9 @@
-from django.db import models
 import django
+from django.db import models
+
 
 class ScriptStatus(models.Model):
-    script_id = models.IntegerField()
+    script_id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=60)
     script_path = models.CharField(max_length=400)
     status_code = models.IntegerField()
