@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from graphene_django.views import GraphQLView
+from health_data.schema import schema
 from health_data.views import save_health_data_export
 from plants.views import *
 from script_status.views import *
@@ -25,12 +27,16 @@ urlpatterns = [
     path('plant/<int:plant_id>/', plant_detail, name='plant'),
     path('getAllPlantData/', get_all_plant_data, name='allplants'),
     path('getAllPlants/', get_all_plants, name="get_all_plants"),
-    path('getLatestPlantUpdates/', get_latest_plant_updates, name="get_latest_plant_updates"),
-    path('planthistory/<int:plant_id>/<int:hours>/', plant_detail_history, name='planthistory'),
+    path('getLatestPlantUpdates/', get_latest_plant_updates,
+         name="get_latest_plant_updates"),
+    path('planthistory/<int:plant_id>/<int:hours>/',
+         plant_detail_history, name='planthistory'),
     path('reload_plant_data/', reload_plant_data, name="reload_plant_data"),
-    path('create_update_plant/<int:plant_id>/', create_update_plant, name="create_update_plant"),
+    path('create_update_plant/<int:plant_id>/',
+         create_update_plant, name="create_update_plant"),
     path('getNewId/', get_new_id, name='get_new_id'),
-    path('health', save_health_data_export, name='save_health_data_export')
+    path('health', save_health_data_export, name='save_health_data_export'),
+    path('healthgraphql', GraphQLView.as_view(graphiql=True, schema=schema)),
     # path('getAvailableMacAddresses/', get_not_set_mac_addresses, name='get_not_set_mac_addresses'),
 
 ]

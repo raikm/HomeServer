@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'health_data',
     'script_status',
     'rest_framework',
+    'graphene_django',
 
 ]
 
@@ -72,6 +73,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
+#
 
 TEMPLATES = [
     {
