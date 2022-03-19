@@ -26,7 +26,7 @@ SECRET_KEY = '-1pag@jy59j(1i+b5jjczafye&m!zx3hxtt=w1bbs3@zvo5mx8'
 DEBUG = int(os.environ.get('DEBUG', default=1))
 
 ALLOWED_HOSTS = ['192.168.0.25', 'localhost', '127.0.0.1', '192.168.1.217',
-                 '192.168.1.50', '192.168.1.80', '192.168.1.79', '192.168.1.213', '192.168.1.159', '192.168.1.147' 'homeapp.com']
+                 '192.168.1.50', '192.168.1.80', '192.168.1.79', '192.168.1.213', '192.168.1.159', '192.168.1.147' 'homeapp.com', '0.0.0.0']
 
 
 # Application definition
@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'plants',
-    'health_data',
+    'notifications',
     'script_status',
     'rest_framework',
     'graphene_django',
